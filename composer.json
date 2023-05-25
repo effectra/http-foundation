@@ -1,0 +1,23 @@
+{
+    "name": "effectra/http-foundation",
+    "description": "The Effectra HTTP Foundation package.",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Effectra\\Http\\Foundation\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Mohammed Taha",
+            "email": "info@mohammedtaha.net"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "psr/http-message": "^2.0",
+        "psr/http-server-handler": "^1.0",
+        "effectra/contracts": "^1.0"
+    }
+}
