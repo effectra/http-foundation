@@ -6,9 +6,7 @@ namespace Effectra\Http\Foundation;
 
 use Effectra\Contracts\Http\RequestFoundationInterface;
 use Effectra\Http\Message\ServerRequest;
-use Effectra\Http\Message\Uri;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\UriInterface;
 
 /**
  * Represents the Request Foundation implementation.
@@ -42,8 +40,8 @@ class RequestFoundation implements RequestFoundationInterface
     {
         $method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
         $headers = self::getHeaders();
-        $uri = self::getUriFromGlobals();
-        $body = (string) file_get_contents('php://input');
+        $uri = UriFoundation::getFromGlobals();
+        $body =  StreamFoundation::create();
         $protocol = isset($_SERVER['SERVER_PROTOCOL']) ? str_replace('HTTP/', '', $_SERVER['SERVER_PROTOCOL']) : '1.1';
 
         $serverRequest = new ServerRequest(
@@ -78,51 +76,6 @@ class RequestFoundation implements RequestFoundationInterface
             }
         }
         return $headers;
-    }
-
-    /**
-     * Retrieves the URI from the global $_SERVER variable.
-     *
-     * @return UriInterface The URI.
-     */
-    private static function getUriFromGlobals(): UriInterface
-    {
-        $uri = new Uri('');
-        if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
-            $uri = $uri->withScheme('https');
-        } else {
-            $uri = $uri->withScheme('http');
-        }
-
-        $hasPort = false;
-        if (isset($_SERVER['HTTP_HOST'])) {
-            $hostHeaderParts = explode(':', $_SERVER['HTTP_HOST']);
-            $host = array_shift($hostHeaderParts);
-            $uri = $uri->withHost($host);
-            if (count($hostHeaderParts) > 0) {
-                $port = (int) array_shift($hostHeaderParts);
-                if ($port > 0 && $port <= 65535) {
-                    $uri = $uri->withPort($port);
-                    $hasPort = true;
-                }
-            }
-        }
-
-        if (!$hasPort && isset($_SERVER['SERVER_PORT'])) {
-            $serverPort = (int) $_SERVER['SERVER_PORT'];
-            if (($uri->getScheme() === 'http' && $serverPort !== 80) || ($uri->getScheme() === 'https' && $serverPort !== 443)) {
-                $uri = $uri->withPort($serverPort);
-            }
-        }
-
-        if (isset($_SERVER['REQUEST_URI'])) {
-            $requestUriParts = explode('?', $_SERVER['REQUEST_URI'], 2);
-            $path = array_shift($requestUriParts);
-            $query = count($requestUriParts) > 0 ? $requestUriParts[0] : '';
-            $uri = $uri->withPath($path)->withQuery($query);
-        }
-
-        return $uri;
     }
 
     /**
