@@ -10,7 +10,7 @@ use Psr\Http\Message\ResponseInterface;
 /**
  * Represents the Response Foundation implementation.
  */
-class ResponseFoundation implements ResponseFoundationInterface
+class ResponseFoundation 
 {
     /**
      * ResponseFoundation constructor.

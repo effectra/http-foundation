@@ -18,7 +18,6 @@
     "require": {
         "psr/http-message": "^1.1 || ^2.0",
         "psr/http-server-handler": "^1.0",
-        "effectra/contracts": "^1.0",
         "effectra/http-message":"^2.0"
     }
 }

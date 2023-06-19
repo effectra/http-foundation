@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Effectra\Http\Foundation;
 
-use Effectra\Contracts\Http\RequestFoundationInterface;
 use Effectra\Http\Message\ServerRequest;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Represents the Request Foundation implementation.
  */
-class RequestFoundation implements RequestFoundationInterface
+class RequestFoundation 
 {
     /**
      * RequestFoundation constructor.
