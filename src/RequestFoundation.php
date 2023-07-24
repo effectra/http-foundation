@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Effectra\Http\Foundation;
 
 use Effectra\Http\Message\ServerRequest;
+use Effectra\Http\Message\UploadedFile;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -86,21 +87,15 @@ class RequestFoundation
     private static function normalizeFiles(array $files): array
     {
         $normalizedFiles = [];
-        foreach ($files as $key => $value) {
-            if (is_array($value['name'])) {
-                foreach ($value['name'] as $index => $name) {
-                    $normalizedFiles[$key][$index] = [
-                        'name' => $name,
-                        'type' => $value['type'][$index],
-                        'tmp_name' => $value['tmp_name'][$index],
-                        'error' => $value['error'][$index],
-                        'size' => $value['size'][$index],
-                    ];
-                }
-            } else {
-                $normalizedFiles[$key] = $value;
-            }
+        foreach ($files as $key => $file) {
+            $normalizedFiles[$key] = new UploadedFile(
+                $file['tmp_name'],
+                $file['size'],
+                $file['error'],
+                $file['name'],
+                $file['type']
+            );
         }
-        return $normalizedFiles;
+        return  $normalizedFiles;
     }
 }
