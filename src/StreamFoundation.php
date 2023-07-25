@@ -13,6 +13,7 @@ use Effectra\Http\Message\Stream;
  *
  * @package Effectra\Http\Foundation
  */
+ 
 class StreamFoundation
 {
     /**
@@ -23,8 +24,11 @@ class StreamFoundation
     public static function create(): Stream
     {
         $resource = fopen('php://temp', 'r+');
+
         fwrite($resource, file_get_contents('php://input'));
+
         rewind($resource);
+
         return new Stream($resource);
     }
 }

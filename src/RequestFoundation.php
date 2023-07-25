@@ -5,31 +5,13 @@ declare(strict_types=1);
 namespace Effectra\Http\Foundation;
 
 use Effectra\Http\Message\ServerRequest;
-use Effectra\Http\Message\UploadedFile;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Represents the Request Foundation implementation.
  */
-class RequestFoundation 
+class RequestFoundation
 {
-    /**
-     * RequestFoundation constructor.
-     *
-     * @param array $getParams The GET parameters.
-     * @param array $postParams The POST parameters.
-     * @param array $cookies The cookies.
-     * @param array $files The uploaded files.
-     * @param array $server The server variables.
-     */
-    public function __construct(
-        public array $getParams,
-        public array $postParams,
-        public array $cookies,
-        public array $files,
-        public array $server
-    ) {
-    }
 
     /**
      * Creates a ServerRequestInterface instance from global variables.
@@ -43,20 +25,12 @@ class RequestFoundation
         $uri = UriFoundation::getFromGlobals();
         $body =  StreamFoundation::create();
         $protocol = isset($_SERVER['SERVER_PROTOCOL']) ? str_replace('HTTP/', '', $_SERVER['SERVER_PROTOCOL']) : '1.1';
+        $files = UploadedFileFoundation::createFromGlobals();
 
-        $serverRequest = new ServerRequest(
-            method: $method,
-            uri: $uri,
-            headers: $headers,
-            body: $body,
-            queryParams: $_GET,
-            parsedBody: $_POST,
-            protocolVersion: $protocol,
-            attributes: $_SERVER,
-        );
+        $serverRequest = new ServerRequest($method, $uri, $headers, $body, $_GET, $_POST, $protocol, $_SERVER);
         $serverRequest
             ->withCookieParams($_COOKIE)
-            ->withUploadedFiles(self::normalizeFiles($_FILES));
+            ->withUploadedFiles($files);
 
         return $serverRequest;
     }
@@ -76,26 +50,5 @@ class RequestFoundation
             }
         }
         return $headers;
-    }
-
-    /**
-     * Normalizes the uploaded files array.
-     *
-     * @param array $files The uploaded files array.
-     * @return array The normalized files array.
-     */
-    private static function normalizeFiles(array $files): array
-    {
-        $normalizedFiles = [];
-        foreach ($files as $key => $file) {
-            $normalizedFiles[$key] = new UploadedFile(
-                $file['tmp_name'],
-                $file['size'],
-                $file['error'],
-                $file['name'],
-                $file['type']
-            );
-        }
-        return  $normalizedFiles;
     }
 }
