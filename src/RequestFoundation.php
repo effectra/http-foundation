@@ -27,7 +27,7 @@ class RequestFoundation
         $protocol = isset($_SERVER['SERVER_PROTOCOL']) ? str_replace('HTTP/', '', $_SERVER['SERVER_PROTOCOL']) : '1.1';
         $files = UploadedFileFoundation::createFromGlobals();
 
-        $serverRequest = new ServerRequest($method, $uri, $headers, $body, $_GET, $_POST, $protocol, $_SERVER);
+        $serverRequest = new ServerRequest($method, $uri, $headers, $body, $protocol, $_GET, $_POST,  $_SERVER);
         $serverRequest
             ->withCookieParams($_COOKIE)
             ->withUploadedFiles($files);
