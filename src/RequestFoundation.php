@@ -28,9 +28,8 @@ class RequestFoundation
         $files = UploadedFileFoundation::createFromGlobals();
 
         $serverRequest = new ServerRequest($method, $uri, $headers, $body, $protocol, $_GET, $_POST,  $_SERVER);
-        $serverRequest
-            ->withCookieParams($_COOKIE)
-            ->withUploadedFiles($files);
+        $serverRequest = $serverRequest->withCookieParams($_COOKIE);
+        $serverRequest = $serverRequest->withUploadedFiles($files);
 
         return $serverRequest;
     }
